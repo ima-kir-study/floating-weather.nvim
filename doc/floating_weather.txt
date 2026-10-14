@@ -1,0 +1,83 @@
+*floating_weather.txt*	Floating window with weather for Neovim
+
+==============================================================================
+1. TABLE OF CONTENTS					*floating_weather-table-of-contents*
+
+    1. Introduction ........................ |floating_weather-intro|
+    2. Platforms ........................... |floating_weather-platforms|
+    3. Requirements ........................ |floating_weather-requirements|
+    4. Installing .......................... |floating_weather-installing|
+    5. Setting up .......................... |floating_weather-setting-up|
+    6. Commands ............................ |floating_weather-commands|
+    7. Mappings ............................ |floating_weather-mappings|
+    8. Using ............................... |floating_weather-using|
+
+==============================================================================
+1. INTRODUCTION					*floating_weather-intro*
+
+Floating Weather shows current weather in floating window in Neovim. The data
+is taken from wttr.in
+
+Features:
+    • description, temperature, feels like, wind, pressure, UV-index
+    • transparent background
+
+==============================================================================
+2. PLATFORMS					*floating_weather-platforms*
+
+• Tested on Linux. Plugin work on other platforms is not guaranteed.
+
+==============================================================================
+3. REQUIREMENTS					*floating_weather-requirements*
+
+• nvim (tested on v0.12.5)
+• curl
+
+==============================================================================
+4. INSTALLING					*floating_weather-installing*
+
+Packer: >
+
+    use {"ima-kir-study/floating-weather.nvim"}
+
+<
+
+==============================================================================
+5. SETTING UP					*floating_weather-setting-up*
+
+Add to your init.lua smth like this: >
+
+vim.keymap.set(
+    "n",
+    "<leader>w",
+    ":OpenFloatingWeather<CR>",
+    { desc = "FloatingWeather plugin!", buffer = true, silent = true },
+)
+
+require("floating_weather").setup({
+    city = 'Москва',
+    transparent_bg = true,
+})
+
+<
+
+==============================================================================
+6. COMMANDS					*floating_weather-commands*
+
+:OpenFloatingWeather      *:OpenFloatingWeather*
+    Open floating window with weather.
+
+==============================================================================
+7. MAPPINGS					*floating_weather-mappings*
+
+Inside the floating window:
+    q    Close window.
+
+==============================================================================
+8. USING					*floating_weather-using*
+
+If you use settings from the |floating_weather-setting-up| section, press
+<leader>w
+
+==============================================================================
+vim:tw=78:ts=8:noet:ft=help:norl:

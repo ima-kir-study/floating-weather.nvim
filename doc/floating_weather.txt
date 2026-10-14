@@ -50,7 +50,7 @@ Add to your init.lua smth like this: >
 vim.keymap.set(
     "n",
     "<leader>w",
-    ":ToggleFloatingWeather<CR>",
+    ":OpenFloatingWeather<CR>",
     { desc = "FloatingWeather plugin!", buffer = true, silent = true },
 )
 
@@ -64,7 +64,7 @@ require("floating_weather").setup({
 ==============================================================================
 6. COMMANDS					*floating_weather-commands*
 
-:ToggleFloatingWeather      *:ToggleFloatingWeather*
+:OpenFloatingWeather      *:OpenFloatingWeather*
     Open floating window with weather.
 
 ==============================================================================

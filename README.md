@@ -29,7 +29,7 @@ use {"ima-kir-study/floating-weather.nvim"}
 Add to your `init.lua` smth like this:
 
 ```lua
-vim.keymap.set("n", "<leader>w", ":ToggleFloatingWeather<CR>", { desc = "FloatingWeather plugin!", buffer = true, silent = true })
+vim.keymap.set("n", "<leader>w", ":OpenFloatingWeather<CR>", { desc = "FloatingWeather plugin!", buffer = true, silent = true })
 
 require("floating_weather").setup({
     city = 'Москва',

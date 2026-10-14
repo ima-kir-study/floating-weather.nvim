@@ -95,7 +95,7 @@ local function formatOutput(data)
 	}
 end
 
-function M.toggle()
+function M.open()
 	vim.print("Opening weather forecast...")
 	vim.cmd("redraw")
 

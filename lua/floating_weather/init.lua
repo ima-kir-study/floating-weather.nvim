@@ -96,8 +96,52 @@ local function formatOutput(data)
 end
 
 function M.toggle()
-    vim.print(1)
+	vim.print("Opening weather forecast...")
+	vim.cmd("redraw")
+
+	-- get and format weather data
+	local data = getWeather(M.config.city, weather)
+	local formatted_data = formatOutput(data)
+
+	-- create buffer
+	local buf = vim.api.nvim_create_buf(false, true)
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, formatted_data)
+
+	vim.print("")
+
+	-- calculate window height and width
+	local h = #formatted_data
+	local w = 0
+	for i = 0, h do
+		if formatted_data[i] ~= nil then
+			if vim.str_utfindex(formatted_data[i]) > w then
+				w = vim.str_utfindex(formatted_data[i])
+			end
+		end
+	end
+
+	-- open floating window
+	local win = vim.api.nvim_open_win(buf, true, {
+		relative = "editor",
+		width = w,
+		height = h,
+		row = (vim.api.nvim_win_get_height(0) - h) / 2,
+		col = (vim.api.nvim_win_get_width(0) - w) / 2,
+		style = "minimal",
+		border = "rounded",
+	})
+
+	-- transparent bg
+	if M.config.transparent_bg then
+		vim.api.nvim_set_hl(0, "MyFloat", { bg = "NONE" })
+		vim.api.nvim_set_hl(0, "MyFloatBorder", { bg = "NONE" })
+		vim.wo[win].winhighlight = "NormalFloat:MyFloat,FloatBorder:MyFloatBorder"
+	end
+
+	-- close window by "q"
+	vim.keymap.set("n", "q", function()
+		vim.api.nvim_win_close(win, true)
+	end, { buffer = buf, desc = "Close floating window" })
 end
 
 return M
-

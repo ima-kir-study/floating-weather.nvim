@@ -31,7 +31,7 @@ require('floating_weather').setup({
 
 ## Using
 
-If you use settings from the `Setting Up` section, press `<leader>w`
+If you use settings from the [Setting Up](https://github.com/ima-kir-study/floating-weather.nvim/tree/main#setting-up) section, press `<leader>w`
 
 ## Sources Used
 

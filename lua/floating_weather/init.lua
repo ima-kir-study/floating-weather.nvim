@@ -7,6 +7,33 @@ function M.setup(opts)
 	M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 end
 
+local weather = {
+	feels_like = "",
+	temperature = "",
+	cloud_cover = "",
+	pressure = "",
+	uv_index = "",
+	wind_speed = "",
+	weather_code = "",
+}
+
+local function getWeather(city, weather)
+	local p = io.popen(string.format("curl -s https://wttr.in/%s?format=j2", city))
+	local raw = p:read("all")
+	p.close()
+	local json_data = vim.json.decode(raw).current_condition[1]
+
+	weather.feels_like = json_data.FeelsLikeC
+	weather.temperature = json_data.temp_C
+	weather.cloud_cover = json_data.cloudcover
+	weather.pressure = json_data.pressure
+	weather.uv_index = json_data.uvIndex
+	weather.wind_speed = json_data.windspeedKmph
+	weather.weather_code = json_data.weatherCode
+
+	return weather
+end
+
 local weather_code_map = {
 	[395] = "Умеренный или сильный снегопад в районе с грозой",
 	[392] = "Местами небольшой снег в районе с грозой",

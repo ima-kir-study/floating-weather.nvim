@@ -84,6 +84,17 @@ local weather_code_map = {
 	[116] = "Переменная облачность",
 	[113] = "Ясно/солнечно",
 }
+
+local function formatOutput(data)
+	return {
+		weather_code_map[tonumber(data.weather_code)],
+		string.format("%d°C, ощущается как %d°C", data.temperature, data.feels_like),
+		string.format("Ветер %d км/ч", data.wind_speed),
+		string.format("Давление %d мм.рт.ст.", data.pressure),
+		string.format("УФ-индекс %d", data.uv_index),
+	}
+end
+
 function M.toggle()
     vim.print(1)
 end

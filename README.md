@@ -16,6 +16,14 @@ Technical requirements: [docs/technical_requirements.md](https://github.com/ima-
 - `nvim` (tested on `v0.12.5`)
 - `curl`
 
+## Installing
+
+To install plugin, for example, with Packer, use this code:
+
+```lua
+use {"ima-kir-study/floating-weather.nvim"}
+```
+
 ## Setting Up
 
 Add to your `init.lua` smth like this:
@@ -23,7 +31,7 @@ Add to your `init.lua` smth like this:
 ```lua
 vim.keymap.set("n", "<leader>w", ":ToggleFloatingWeather<CR>", { desc = "FloatingWeather plugin!", buffer = true, silent = true })
 
-require('floating_weather').setup({
+require("floating_weather").setup({
     city = 'Москва',
     transparent_bg = true,
 })

@@ -1,40 +1,49 @@
 local M = {}
 
--- rewrite defaults with user settings
+--- @class Config
+--- @field city string City passed to wttr.in
+--- @field transparent_bg boolean Make background of the floating window
+---   transparent
+
+--- @type Config
 local defaults = require("floating_weather.config")
 M.config = vim.deepcopy(defaults)
+
+--- Applies user settings on top of the defaults.
+--- @param opts? Partial<Config> Partial config, fields to override defaults.
 function M.setup(opts)
 	M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 end
 
-local weather = {
-	feels_like = "",
-	temperature = "",
-	cloud_cover = "",
-	pressure = "",
-	uv_index = "",
-	wind_speed = "",
-	weather_code = "",
-}
+--- @class WeatherData
+--- @field feels_like number Perceived temperature, °C
+--- @field temperature number Real temperature, °C
+--- @field pressure number Atmospheric pressure, hPa
+--- @field uv_index number UV-index
+--- @field wind_speed number Wind speed, km/h
+--- @field weather_code number Code of the weather (see weatherCodeMap)
 
-local function getWeather(city, weather)
+--- Gets current weather in specified city.
+---
+--- @param city string City to show the weather in
+--- @return WeatherData
+local function getWeather(city)
 	local p = io.popen(string.format("curl -s https://wttr.in/%s?format=j2", city))
 	local raw = p:read("all")
 	p.close()
-	local json_data = vim.json.decode(raw).current_condition[1]
+	local jsonData = vim.json.decode(raw).current_condition[1]
 
-	weather.feels_like = json_data.FeelsLikeC
-	weather.temperature = json_data.temp_C
-	weather.cloud_cover = json_data.cloudcover
-	weather.pressure = json_data.pressure
-	weather.uv_index = json_data.uvIndex
-	weather.wind_speed = json_data.windspeedKmph
-	weather.weather_code = json_data.weatherCode
-
-	return weather
+	return {
+		feels_like = tonumber(jsonData.FeelsLikeC),
+		temperature = tonumber(jsonData.temp_C),
+		pressure = tonumber(jsonData.pressure),
+		uv_index = tonumber(jsonData.uvIndex),
+		wind_speed = tonumber(jsonData.windspeedKmph),
+		weather_code = tonumber(jsonData.weatherCode),
+	}
 end
 
-local weather_code_map = {
+local weatherCodeMap = {
 	[395] = "Умеренный или сильный снегопад в районе с грозой",
 	[392] = "Местами небольшой снег в районе с грозой",
 	[389] = "Умеренный или сильный дождь в районе с грозой",
@@ -85,38 +94,41 @@ local weather_code_map = {
 	[113] = "Ясно/солнечно",
 }
 
+--- Formats weather from the getWeather function.
+---
+--- @param data WeatherData Output of the getWeather function.
+--- @return string[]
 local function formatOutput(data)
 	return {
-		weather_code_map[tonumber(data.weather_code)],
+		weatherCodeMap[data.weather_code] or "Неизвестный код погоды",
 		string.format("%d°C, ощущается как %d°C", data.temperature, data.feels_like),
 		string.format("Ветер %d км/ч", data.wind_speed),
-		string.format("Давление %d мм.рт.ст.", data.pressure),
+		string.format("Давление %d гПа", data.pressure),
 		string.format("УФ-индекс %d", data.uv_index),
 	}
 end
 
+--- Opens a floating window with the weather forecast.
 function M.open()
 	vim.print("Opening weather forecast...")
 	vim.cmd("redraw")
 
 	-- get and format weather data
-	local data = getWeather(M.config.city, weather)
-	local formatted_data = formatOutput(data)
+	local data = getWeather(M.config.city)
+	local formattedData = formatOutput(data)
 
 	-- create buffer
 	local buf = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_buf_set_lines(buf, 0, -1, false, formatted_data)
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, formattedData)
 
-	vim.print("")
+	vim.print("") -- clear previous message
 
 	-- calculate window height and width
-	local h = #formatted_data
+	local h = #formattedData
 	local w = 0
-	for i = 0, h do
-		if formatted_data[i] ~= nil then
-			if vim.str_utfindex(formatted_data[i]) > w then
-				w = vim.str_utfindex(formatted_data[i])
-			end
+	for i = 1, h do
+		if vim.str_utfindex(formattedData[i]) > w then
+			w = vim.str_utfindex(formattedData[i])
 		end
 	end
 

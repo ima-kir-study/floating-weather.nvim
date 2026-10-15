@@ -5,10 +5,10 @@ Develop a weather plugin for the [Neovim](https://github.com/neovim/neovim).
 ## Plugin description
 User binds weather forecast display to the key. When you press a key, a floating window opens with this information about the forecast:
 
-- date and time
-- temperature (in degrees Celsius)
-- presure
-- UV index
+- perceived and real temperature
+- wind speed
+- pressure
+- UV-index
 
 ## How it should work
 

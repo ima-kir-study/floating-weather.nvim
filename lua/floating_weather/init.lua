@@ -18,7 +18,7 @@ end
 --- @class WeatherData
 --- @field feels_like number Perceived temperature, °C
 --- @field temperature number Real temperature, °C
---- @field pressure number Atmospheric pressure, mmHg
+--- @field pressure number Atmospheric pressure, hPa
 --- @field uv_index number UV-index
 --- @field wind_speed number Wind speed, km/h
 --- @field weather_code number Code of the weather (see weatherCodeMap)
@@ -103,7 +103,7 @@ local function formatOutput(data)
 		weatherCodeMap[data.weather_code] or "Неизвестный код погоды",
 		string.format("%d°C, ощущается как %d°C", data.temperature, data.feels_like),
 		string.format("Ветер %d км/ч", data.wind_speed),
-		string.format("Давление %d мм.рт.ст.", data.pressure),
+		string.format("Давление %d гПа", data.pressure),
 		string.format("УФ-индекс %d", data.uv_index),
 	}
 end
